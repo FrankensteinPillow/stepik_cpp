@@ -3,6 +3,8 @@
 SharedPtr::SharedPtr(Expression *ptr) : _ptr(ptr) {
     if (ptr != 0) {
         this->_refCounter = new int(1);
+    } else {
+        this->_refCounter = 0;
     }
 }
 
@@ -17,14 +19,16 @@ SharedPtr::SharedPtr(SharedPtr const &ptr) {
 SharedPtr::~SharedPtr() {
     if (this->_ptr != 0 && this->_refCounter != 0) {
         --(*this->_refCounter);
-    }
-    if (*(this->_refCounter) <= 0) {
-        if (this->_ptr != 0) {
+        if (*(this->_refCounter) <= 0) {
             delete this->_ptr;
+            this->_ptr = 0;
+            delete this->_refCounter;
+            this->_refCounter = 0;
         }
-        delete this->_refCounter;
     }
 }
+
+Expression *SharedPtr::get() const { return this->_ptr; }
 
 SharedPtr &SharedPtr::operator=(SharedPtr const &ptr) {
     if (this != &ptr) {
@@ -40,17 +44,20 @@ SharedPtr &SharedPtr::operator=(SharedPtr const &ptr) {
     return *this;
 }
 
-Expression *SharedPtr::get() const { return this->_ptr; }
-
 void SharedPtr::reset(Expression *ptr) {
     if (this->_ptr != 0) {
         --(*this->_refCounter);
         if ((*this->_refCounter) <= 0) {
             delete this->_ptr;
+            this->_ptr = 0;
+            delete this->_refCounter;
+            this->_refCounter = 0;
         }
+        this->_refCounter = new int(1);
         this->_ptr = ptr;
     }
 }
 
 Expression *SharedPtr::operator->() const { return this->_ptr; }
 Expression &SharedPtr::operator*() const { return *this->_ptr; }
+

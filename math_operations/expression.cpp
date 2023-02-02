@@ -13,7 +13,9 @@ BinaryOperation::BinaryOperation(Expression *const left, char op,
     : left(left), op(op), right(right) {}
 BinaryOperation::~BinaryOperation() {
     delete this->left;
+    this->left = 0;
     delete this->right;
+    this->right = 0;
 }
 double BinaryOperation::evaluate() const {
     switch (this->op) {

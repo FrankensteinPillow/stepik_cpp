@@ -2,7 +2,10 @@
 
 ScopedPtr::ScopedPtr(Expression *ptr) { this->_ptr = ptr; }
 
-ScopedPtr::~ScopedPtr() { delete this->_ptr; }
+ScopedPtr::~ScopedPtr() {
+    delete this->_ptr;
+    this->_ptr = 0;
+}
 
 Expression *ScopedPtr::get() const { return this->_ptr; }
 
